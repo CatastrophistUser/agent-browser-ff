@@ -1,0 +1,18 @@
+# dependencies and build output
+node_modules/
+dist/
+.astro/
+
+# agent-browser-ff runtime data (artifacts, downloads)
+.agent-browser-ff/
+.fp-home
+
+# secrets and live cookies: never commit
+.env
+.env.*
+state*.json
+*.har
+
+# logs and OS files
+*.log
+.DS_Store

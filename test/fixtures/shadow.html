@@ -1,0 +1,2 @@
+<!doctype html><html><head><title>Shadow</title></head><body><h1>Shadow</h1><div id="host"></div>
+<script>const r=document.getElementById('host').attachShadow({mode:'open'});r.innerHTML='<button id="sb">Shadow Button</button><span id="o"></span>';r.getElementById('sb').onclick=()=>{r.getElementById('o').textContent='shadow clicked'}</script></body></html>

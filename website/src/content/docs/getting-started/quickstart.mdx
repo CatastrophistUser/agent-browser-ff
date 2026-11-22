@@ -1,0 +1,79 @@
+---
+title: Quickstart
+description: Open a page, snapshot it, and act on refs in under a minute.
+---
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Steps>
+1. Install
+
+   ```bash
+   npm install -g agent-browser-ff
+   agent-browser-ff install
+   ```
+
+2. Open a page
+
+   ```bash
+   agent-browser-ff open https://example.com
+   ```
+
+3. Snapshot to get refs
+
+   ```bash
+   agent-browser-ff snapshot
+   ```
+
+   The output is one line per element, with refs like `@e1`.
+
+4. Act on refs
+
+   ```bash
+   agent-browser-ff click @e4
+   agent-browser-ff fill @e2 "hello"
+   agent-browser-ff screenshot --out page.png
+   ```
+
+5. Close
+
+   ```bash
+   agent-browser-ff close
+   ```
+</Steps>
+
+## The core loop
+
+**open → snapshot → act on refs → re-snapshot after navigation → close**
+
+Refs belong to a snapshot generation. After any navigation or major DOM change, run `snapshot` again. A stale ref returns `E_STALE_REF` (exit 4) with a hint.
+
+## Watch it work
+
+```bash
+agent-browser-ff open https://example.com --gui
+agent-browser-ff gui off      # back to headless, session preserved
+```
+
+## A login flow
+
+```bash
+agent-browser-ff open https://example.com/login
+agent-browser-ff snapshot
+agent-browser-ff fill @e2 "user@example.com"
+agent-browser-ff click @e4
+agent-browser-ff wait url "**/dashboard"
+agent-browser-ff snapshot
+agent-browser-ff close
+```
+
+## Make it repeatable
+
+After a manual run that works, save it as a macro:
+
+```bash
+agent-browser-ff macro from-history my-flow --last 6
+agent-browser-ff macro play my-flow --var query="firefox"
+```
+
+See [Macros](/guides/macros/).

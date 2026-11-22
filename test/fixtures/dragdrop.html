@@ -1,0 +1,8 @@
+<!doctype html><html><head><title>Drag</title><style>#a,#b{width:100px;height:60px;border:1px solid #000;margin:10px}</style></head><body>
+<div id="a" draggable="true">Drag me</div><div id="b">Drop here</div><div id="res"></div>
+<script>
+const a=document.getElementById('a'),b=document.getElementById('b');
+a.addEventListener('dragstart',e=>e.dataTransfer.setData('text','x'));
+b.addEventListener('dragover',e=>e.preventDefault());
+b.addEventListener('drop',e=>{e.preventDefault();document.getElementById('res').textContent='dropped'});
+</script></body></html>

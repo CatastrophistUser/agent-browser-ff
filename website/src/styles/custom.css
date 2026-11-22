@@ -1,0 +1,110 @@
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+:root {
+  --sl-font: 'Geist Variable', system-ui, sans-serif;
+  --sl-font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+}
+
+/* Light: agent-browser look — #FAFAFA, near-black, hairlines */
+:root[data-theme='light'] {
+  --sl-color-bg: #fafafa;
+  --sl-color-bg-nav: #fafafa;
+  --sl-color-bg-sidebar: #fafafa;
+  --sl-color-bg-inline-code: #ededed;
+  --sl-color-white: #000000;
+  --sl-color-gray-1: #171717;
+  --sl-color-gray-2: #4d4d4d;
+  --sl-color-gray-3: #666666;
+  --sl-color-gray-4: #a1a1a1;
+  --sl-color-gray-5: #e5e5e5;
+  --sl-color-gray-6: #f0f0f0;
+  --sl-color-hairline: #e5e5e5;
+  --sl-color-accent-low: #eeeeee;
+  --sl-color-accent: #171717;
+  --sl-color-accent-high: #000000;
+  --sl-color-text-accent: #000000;
+}
+:root[data-theme='dark'] {
+  --sl-color-bg: #0a0a0a;
+  --sl-color-bg-nav: #0a0a0a;
+  --sl-color-bg-sidebar: #0a0a0a;
+  --sl-color-white: #ffffff;
+  --sl-color-hairline: #262626;
+  --sl-color-accent-low: #1f1f1f;
+  --sl-color-accent: #ededed;
+  --sl-color-accent-high: #ffffff;
+  --sl-color-text-accent: #ffffff;
+}
+
+/* Pill buttons */
+.sl-link-button {
+  border-radius: 9999px;
+  font-weight: 500;
+  padding: 0.6rem 1.4rem;
+}
+.sl-link-button.primary {
+  background: #171717;
+  color: #fff;
+  border-color: #171717;
+}
+:root[data-theme='dark'] .sl-link-button.primary {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+.sl-link-button.minimal {
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 9999px;
+}
+
+/* Big, tight hero headline */
+.hero h1 {
+  font-size: clamp(2.6rem, 7vw, 4.5rem);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  font-weight: 600;
+}
+.hero .tagline { color: var(--sl-color-gray-2); max-width: 36rem; }
+
+/* Flat cards with hairline borders, 6px radius */
+.card {
+  border-radius: 6px;
+  border: 1px solid var(--sl-color-hairline);
+  background: transparent;
+}
+pre, .expressive-code .frame { border-radius: 6px !important; }
+h1, h2, h3 { letter-spacing: -0.02em; }
+
+/* ---- Dense docs ---- */
+:root {
+  --sl-text-base: 0.875rem;     /* 14px body */
+  --sl-text-sm: 0.8125rem;
+  --sl-text-xs: 0.75rem;
+  --sl-text-h1: 1.75rem;
+  --sl-text-h2: 1.25rem;
+  --sl-text-h3: 1.05rem;
+  --sl-text-h4: 0.95rem;
+  --sl-content-width: 54rem;
+  --sl-nav-height: 3rem;
+  --sl-line-height: 1.55;
+  --sl-sidebar-width: 16rem;
+}
+.sl-markdown-content :not(a, strong, em, del, span, input, code, br, :where(.not-content *)) + :not(a, strong, em, del, span, input, code, br, :where(.not-content *)) {
+  margin-top: 0.85rem;
+}
+.sl-markdown-content h2 { margin-top: 1.6rem; }
+.sl-markdown-content h3 { margin-top: 1.2rem; }
+.sl-markdown-content ul, .sl-markdown-content ol { padding-inline-start: 1.1rem; }
+.sl-markdown-content li + li { margin-top: 0.2rem; }
+.sl-markdown-content table { font-size: 0.8125rem; }
+.sl-markdown-content :is(th, td) { padding: 0.35rem 0.75rem !important; }
+.sl-markdown-content code { font-size: 0.8em; }
+.sidebar-content { gap: 0.5rem; }
+.sidebar-content a { padding: 0.2rem 0.6rem; font-size: 0.8125rem; }
+.sidebar-content summary { padding: 0.25rem 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.right-sidebar-panel { font-size: 0.8rem; }
+.expressive-code { font-size: 0.8rem; }
+.expressive-code pre { padding: 0.5rem 0 !important; }
+.content-panel { padding: 1rem var(--sl-content-pad-x); }
+h1#_top { font-size: var(--sl-text-h1); }

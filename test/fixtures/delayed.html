@@ -1,0 +1,2 @@
+<!doctype html><html><head><title>Delayed</title></head><body><h1>Delayed</h1><div id="slot">loading...</div>
+<script>setTimeout(()=>{document.getElementById('slot').innerHTML='<button id="late">Late Button</button> <span>Order confirmed</span>'},800);fetch('/api/ping').then(()=>{});</script></body></html>
