@@ -20,7 +20,7 @@ npm install -g agent-browser-ff
 agent-browser-ff install        # downloads Playwright's Firefox build
 ```
 
-Node.js 20+ is required. Firefox only; there is no Chromium or WebKit support.
+(`agent-browser-ff setup` also checks PATH and offers to install this skill for the user's coding agents.) Node.js 20+ is required. Firefox only; there is no Chromium or WebKit support.
 
 ## Core loop
 

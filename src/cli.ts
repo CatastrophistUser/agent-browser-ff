@@ -7,6 +7,7 @@ import YAML from 'yaml';
 import { call } from './client/index.js';
 import { FpError, EXIT } from './shared/errors.js';
 import { paths } from './shared/config.js';
+import { nodeSupportsSkills, skillInstallArgs, SKILLS_MIN_NODE, parseYesNo, dirOnPath, globalBinDir, formatSummary, type StepResult } from './install.js';
 import { scrapeSchema } from './daemon/scrape/schema.js';
 import { vaultAdd, vaultList, vaultRemove } from './daemon/vault/store.js';
 import { createRequire } from 'node:module';
@@ -243,13 +244,68 @@ const vault = program.command('vault').description('encrypted credential vault')
   c.action(async (key: string, opts: any) => run(opts, () => withPassphrase((pass) => call('login', { session: sessionName(opts), timeout: opts.timeout, key, macro: opts.macro, passphrase: pass }))));
 }
 
-// Install
-program.command('install').description("download Playwright's Firefox build").action(() => {
+// Install and setup
+function installFirefox(): number {
   const req = createRequire(import.meta.url);
   const cli = path.join(path.dirname(req.resolve('playwright-core/package.json')), 'cli.js');
-  const r = spawnSync(process.execPath, [cli, 'install', 'firefox'], { stdio: 'inherit' });
-  process.exitCode = r.status ?? 1;
+  return spawnSync(process.execPath, [cli, 'install', 'firefox'], { stdio: 'inherit' }).status ?? 1;
+}
+function ask(question: string): Promise<string> {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => rl.question(question, (a) => { rl.close(); resolve(a); }));
+}
+
+program.command('install').description("download Playwright's Firefox build").action(() => {
+  process.exitCode = installFirefox();
 });
+
+program.command('setup').description('finish installing: check PATH, download Firefox, and install the agent skill')
+  .option('-y, --yes', 'do not ask questions; install the skill')
+  .option('--no-skill', 'skip the agent skill')
+  .option('--skip-firefox', 'skip the Firefox download')
+  .action(async (opts: { yes?: boolean; skill: boolean; skipFirefox?: boolean }) => {
+    const steps: StepResult[] = [];
+    console.log(`agent-browser-ff ${VERSION} setup\n`);
+
+    // 1. Is the command on PATH?
+    const win = process.platform === 'win32';
+    const found = spawnSync(win ? 'where' : 'which', ['agent-browser-ff'], { encoding: 'utf8' });
+    if (found.status === 0) {
+      steps.push({ name: 'agent-browser-ff is on your PATH', status: 'ok' });
+    } else {
+      const prefix = spawnSync(win ? 'npm.cmd' : 'npm', ['prefix', '-g'], { encoding: 'utf8', shell: win }).stdout?.trim() ?? '';
+      const bin = prefix ? globalBinDir(prefix) : '<npm global bin folder>';
+      const onPath = prefix ? dirOnPath(bin, process.env.PATH ?? '') : false;
+      steps.push({ name: 'agent-browser-ff is not on your PATH', status: 'failed', note: onPath ? 'open a new terminal' : `add ${bin} to PATH` });
+      if (!win && !onPath) console.log(`To add it, put this in your shell profile (~/.zshrc or ~/.bashrc):\n  export PATH="${bin}:$PATH"\n`);
+    }
+
+    // 2. Firefox
+    if (opts.skipFirefox) steps.push({ name: 'Firefox download', status: 'skipped' });
+    else {
+      const code = installFirefox();
+      steps.push({ name: 'Firefox download', status: code === 0 ? 'ok' : 'failed', note: code === 0 ? undefined : `exit ${code}` });
+    }
+
+    // 3. Agent skill
+    const interactive = Boolean(process.stdin.isTTY && process.stdout.isTTY);
+    if (!opts.skill) steps.push({ name: 'Agent skill', status: 'skipped', note: '--no-skill' });
+    else if (!nodeSupportsSkills(process.version)) {
+      steps.push({ name: 'Agent skill', status: 'failed', note: `needs Node ${SKILLS_MIN_NODE.join('.')}+, found ${process.version}` });
+    } else {
+      let want = Boolean(opts.yes);
+      if (!want && interactive) want = parseYesNo(await ask('\nInstall the agent skill for your coding agents (Claude Code, Codex, Cursor, ...)? [Y/n] '));
+      if (!want) steps.push({ name: 'Agent skill', status: 'skipped', note: interactive ? 'declined' : 'no terminal; rerun with --yes' });
+      else {
+        const s = spawnSync(win ? 'npx.cmd' : 'npx', skillInstallArgs(), { stdio: 'inherit', shell: win });
+        steps.push({ name: 'Agent skill', status: s.status === 0 ? 'ok' : 'failed', note: s.status === 0 ? undefined : 'retry: npx ' + skillInstallArgs().join(' ') });
+      }
+    }
+
+    console.log('\n' + formatSummary(steps));
+    if (steps.some((s) => s.status === 'ok' && s.name === 'Agent skill')) console.log('\nStart a new agent session so it loads the skill.');
+    process.exitCode = steps.some((s) => s.status === 'failed') ? 1 : 0;
+  });
 
 program.parseAsync(process.argv).catch((e: any) => {
   if (e?.code === 'commander.helpDisplayed' || e?.code === 'commander.version') process.exit(0);

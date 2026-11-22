@@ -20,17 +20,17 @@ agent-browser-ff is a Firefox-first alternative to agent-browser and playwright-
 
 ```bash
 npm install -g agent-browser-ff
-agent-browser-ff install        # downloads Playwright's Firefox build
+agent-browser-ff setup          # checks PATH, downloads Firefox, offers to install the agent skill
 agent-browser-ff --version
 ```
 
-Install the agent skill:
+`setup` walks through the remaining steps and asks before installing the skill, which the skills installer adds to the coding agents you choose (Claude Code, Codex, Cursor, ...). Useful flags: `--yes` (no questions), `--no-skill`, `--skip-firefox`. To install only the skill:
 
 ```bash
 npx skills add CatastrophistUser/agent-browser-ff --skill agent-browser-ff -g
 ```
 
-Requires Node.js 20+.
+Requires Node.js 20+. Installing the skill needs Node.js 22.20+.
 
 ## Quick start
 

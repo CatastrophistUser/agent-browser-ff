@@ -10,8 +10,43 @@ import { scrapeSchema } from '../../src/daemon/scrape/schema.js';
 import { toCsv } from '../../src/daemon/actions/scrape.js';
 import { globToRegex, parseRobots } from '../../src/daemon/actions/crawl.js';
 import type { Descriptor } from '../../src/daemon/refs.js';
+import { nodeSupportsSkills, skillInstallArgs, parseYesNo, dirOnPath, globalBinDir, formatSummary } from '../../src/install.js';
 
 const d = (o: Partial<Descriptor>): Descriptor => ({ role: '', name: '', tag: 'div', css: 'div', ...o });
+
+describe('setup helpers', () => {
+  it('builds the global skills install command', () => {
+    expect(skillInstallArgs()).toEqual(['skills', 'add', 'CatastrophistUser/agent-browser-ff', '--skill', 'agent-browser-ff', '-g']);
+  });
+  it('checks the minimum Node version for the skills installer', () => {
+    expect(nodeSupportsSkills('v22.20.0')).toBe(true);
+    expect(nodeSupportsSkills('v22.19.9')).toBe(false);
+    expect(nodeSupportsSkills('v24.0.0')).toBe(true);
+    expect(nodeSupportsSkills('v20.18.0')).toBe(false);
+    expect(nodeSupportsSkills('garbage')).toBe(false);
+  });
+  it('parses yes/no answers with a default of yes', () => {
+    expect(parseYesNo('')).toBe(true);
+    expect(parseYesNo('Y')).toBe(true);
+    expect(parseYesNo(' yes ')).toBe(true);
+    expect(parseYesNo('n')).toBe(false);
+    expect(parseYesNo('maybe')).toBe(false);
+    expect(parseYesNo('', false)).toBe(false);
+  });
+  it('detects whether a directory is on PATH', () => {
+    expect(dirOnPath('/usr/local/bin', '/usr/bin:/usr/local/bin/:/bin', 'darwin')).toBe(true);
+    expect(dirOnPath('/opt/npm/bin', '/usr/bin:/bin', 'linux')).toBe(false);
+    expect(dirOnPath('C:\\Users\\me\\npm', 'c:\\users\\me\\NPM;C:\\Windows', 'win32')).toBe(true);
+  });
+  it('derives the global bin directory', () => {
+    expect(globalBinDir('/usr/local', 'darwin')).toBe('/usr/local/bin');
+    expect(globalBinDir('C:\\npm', 'win32')).toBe('C:\\npm');
+  });
+  it('formats a step summary', () => {
+    expect(formatSummary([{ name: 'A', status: 'ok' }, { name: 'B', status: 'skipped', note: 'declined' }, { name: 'C', status: 'failed' }]))
+      .toBe('✓ A\n- B (declined)\n✗ C');
+  });
+});
 
 describe('secret redaction', () => {
   it('redacts token-like query parameters and credentials in URLs', () => {

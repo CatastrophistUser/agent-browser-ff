@@ -6,6 +6,7 @@ All commands accept `--session <name>` (default `default`), `--json`, and `--tim
 
 ```
 agent-browser-ff install                 # download Playwright's Firefox build
+agent-browser-ff setup [--yes] [--no-skill] [--skip-firefox]   # check PATH, download Firefox, offer to install the agent skill (skill needs Node 22.20+)
 agent-browser-ff open [url] [--gui] [--slowmo <ms>] [--viewport 1280x800] [--device <name>]
 agent-browser-ff gui on|off
 agent-browser-ff close

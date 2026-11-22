@@ -262,7 +262,7 @@ Keep SKILL.md in sync with the CLI. Any command change must update the skill and
 Install paths to document in README:
 
 npm install -g agent-browser-ff
-agent-browser-ff install
+agent-browser-ff setup              (checks PATH, downloads Firefox, offers to install the agent skill)
 npx skills add CatastrophistUser/agent-browser-ff --skill agent-browser-ff -g
 Testing
 Unit tests for ref generation, locator priority, macro normalization, schema validation, scrape extraction, and secret redaction.

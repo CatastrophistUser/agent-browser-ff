@@ -8,6 +8,7 @@ All commands accept `--session <name>`, `--json` and `--timeout <ms>`.
 | Command | Description |
 | --- | --- |
 | `install` | Download Playwright's Firefox build |
+| `setup` | Check PATH, download Firefox, and offer to install the agent skill |
 | `open [url]` | Launch or reuse the browser and optionally load a URL |
 | `gui on\|off` | Switch between headed and headless, preserving the session |
 | `close` | Close the browser for the session |
