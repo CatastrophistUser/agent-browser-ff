@@ -1,6 +1,6 @@
 ---
 name: agent-browser-ff
-description: Automate Firefox from the CLI: open, test, interact with, and scrape websites using snapshot refs, macros, and GUI mode. Use when opening, testing, automating, or scraping sites in Firefox.
+description: "Automate Firefox from the CLI: open, test, interact with, and scrape websites using snapshot refs, macros, and GUI mode. Use when opening, testing, automating, or scraping sites in Firefox."
 ---
 
 # agent-browser-ff
