@@ -3,9 +3,17 @@
   "version": "0.1.0",
   "description": "Firefox browser automation CLI for AI agents and humans",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CatastrophistUser/agent-browser-ff.git"
+  },
+  "homepage": "https://agent-browser-ff.vercel.app/",
+  "keywords": ["firefox", "browser-automation", "ai-agents", "cli", "playwright"],
   "bin": {
     "agent-browser-ff": "dist/cli.js"
   },
+  "files": ["dist", "skills", "README.md", "LICENSE"],
   "engines": {
     "node": ">=20"
   },
